@@ -151,7 +151,7 @@ size_t RLMAccessorContext::addObject(id value, std::string const& object_type, b
     return static_cast<RLMObjectBase *>(value)->_row.get_index();
 }
 
-id RLMAccessorContext::wrap(realm::List l) {
+id RLMAccessorContext::box(realm::List l) {
     REALM_ASSERT(_parentObject);
     REALM_ASSERT(currentProperty);
     return [[RLMArrayLinkView alloc] initWithList:std::move(l) realm:_realm
@@ -159,7 +159,7 @@ id RLMAccessorContext::wrap(realm::List l) {
                                          property:currentProperty];
 }
 
-id RLMAccessorContext::wrap(realm::TableRef table) {
+id RLMAccessorContext::box(realm::TableRef table) {
     REALM_ASSERT(_parentObject);
     REALM_ASSERT(currentProperty);
     return [[RLMArraySubTable alloc] initWithTable:std::move(table)
@@ -168,11 +168,11 @@ id RLMAccessorContext::wrap(realm::TableRef table) {
                                           property:currentProperty];
 }
 
-id RLMAccessorContext::wrap(realm::Object o) {
+id RLMAccessorContext::box(realm::Object o) {
     return RLMCreateObjectAccessor(_realm, _info.linkTargetType(currentProperty.index), o.row().get_index());
 }
 
-id RLMAccessorContext::wrap(realm::Results r) {
+id RLMAccessorContext::box(realm::Results r) {
     return [RLMResults resultsWithObjectInfo:_realm->_info[currentProperty.objectClassName]
                                      results:std::move(r)];
 }
